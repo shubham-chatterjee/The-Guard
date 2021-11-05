@@ -25,8 +25,7 @@ func main() {
         panic(err.Error())
     }
     ID = user.ID 
-    discord.AddHandler(commands)
-    discord.AddHandler(verification)    
+    discord.AddHandler(commands) 
     if err = discord.Open(); err != nil {
         panic(err.Error())
     }
@@ -306,34 +305,4 @@ func Permissions(session *discordgo.Session, guild string, user string, permissi
 	}
 
 	return false
-}
-
-func verification(session *discordgo.Session, member *discordgo.GuildMemberAdd) {
-    fmt.Println(member.Mention())
-    channel, err := session.UserChannelCreate(member.User.ID)
-    fileName := "guard.webp"
-    f, err := os.Open(fileName)
-    if err != nil {
-        panic(err.Error())
-    }
-    ms := &discordgo.MessageSend{
-        Embed: &discordgo.MessageEmbed{
-            Title:"The Guard",
-            Description:"You have joined the pub.\n" + "**Are you a volarant or League of Legends smurf?** (yes/no)",
-            Image: &discordgo.MessageEmbedImage{
-                URL: "attachment://" + fileName,
-            },
-        },
-        Files: []*discordgo.File{
-            &discordgo.File{
-                Name:   fileName,
-                Reader: f,
-            },
-        },
-    }
-    _, err = session.ChannelMessageSendComplex(channel.ID, ms)
-    if err != nil {
-        panic(err.Error())
-    }
-    f.Close()
 }
